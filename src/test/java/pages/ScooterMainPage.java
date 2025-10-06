@@ -95,6 +95,29 @@ public class ScooterMainPage {
         return false;
     }
 
+    // Получить текст вопроса по номеру (1..N)
+    public String getQuestionText(int questionNumber) {
+        List<WebElement> items = driver.findElements(accordionItem);
+        if (questionNumber > 0 && questionNumber <= items.size()) {
+            WebElement question = items.get(questionNumber - 1);
+            WebElement button = question.findElement(accordionButton);
+            return button.getText().trim();
+        }
+        throw new IllegalArgumentException("Неверный номер вопроса: " + questionNumber);
+    }
+
+    // Получить текст ответа по номеру (1..N) — предполагается, что панель уже открыта
+    public String getAnswerText(int questionNumber) {
+        List<WebElement> items = driver.findElements(accordionItem);
+        if (questionNumber > 0 && questionNumber <= items.size()) {
+            WebElement question = items.get(questionNumber - 1);
+            WebElement panel = question.findElement(accordionPanel);
+            wait.until(ExpectedConditions.visibilityOf(panel));
+            return panel.getText().trim();
+        }
+        throw new IllegalArgumentException("Неверный номер вопроса: " + questionNumber);
+    }
+
     // --- Методы для заказа ---
     public void clickHeaderOrderButton() {
         wait.until(ExpectedConditions.elementToBeClickable(headerOrderButton)).click();
